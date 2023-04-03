@@ -96,4 +96,5 @@ with gr.Blocks() as demo:
         ],
         outputs=[chat_output],
     )
+
 demo.launch()
