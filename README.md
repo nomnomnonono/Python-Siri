@@ -1,12 +1,14 @@
 # 概要
 ChatGPT APIとWhisperを活用したSiriのようなWebアプリ
 
-# ローカルで動かす際の注意
+# ローカルでの実行
 以下コマンドを実行する。
 ```bash
-poetry install
+# 各種ライブラリインストール
+make setup
 
-poetry run pip install git+https://github.com/openai/whisper.git
+# gradioの実行
+make run
 ```
 
 # TODO
