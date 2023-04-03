@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "python-siri"
+version = "0.1.0"
+description = ""
+authors = ["nomnomnonono <murumuru1204@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gradio = "^3.24.1"
+openai = "^0.27.2"
+notebook = "^6.5.3"
+whisper = "^1.1.10"
+
+[tool.poetry.dev-dependencies]
+pysen = {version = "0.10.3", extras = ["lint"]}
+
+[tool.pysen]
+version = "0.10.3"
+
+[tool.pysen.lint]
+enable_black = true
+enable_flake8 = true
+enable_isort = true
+enable_mypy = false
+mypy_preset = "strict"
+line_length = 88
+py_version = "py39"
+
+[[tool.pysen.lint.mypy_targets]]
+paths = ["."]
