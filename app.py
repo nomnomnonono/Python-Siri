@@ -1,63 +1,25 @@
 import gradio as gr
-import openai
-import whisper
-
-model = whisper.load_model("small")
-
-
-def transcribe(filepath):
-    audio = whisper.load_audio(filepath)
-    audio = whisper.pad_or_trim(audio)
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
-    options = whisper.DecodingOptions(fp16=False)
-    result = whisper.decode(model, mel, options)
-    return result.text
-
-
-def answer_by_chat(
-    question,
-    role1,
-    content1,
-    role2,
-    content2,
-    role3,
-    content3,
-    role4,
-    content4,
-    role5,
-    content5,
-    api_key,
-):
-    openai.api_key = api_key
-    messages = [
-        {"role": role, "content": content}
-        for role, content in [
-            [role1, content1],
-            [role2, content2],
-            [role3, content3],
-            [role4, content4],
-            [role5, content5],
-        ]
-        if role != "" and content != ""
-    ]
-    messages.append({"role": "user", "content": question})
-    response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
-    return response["choices"][0]["message"]["content"]
-
+from utils import answer_by_chat, transcribe
 
 with gr.Blocks() as demo:
     gr.Markdown("Siri-like application via Whisper and ChatGPT")
     with gr.Tabs():
         with gr.TabItem(label="General"):
-            api_key = gr.Textbox(label="Paste your own openai-api-key")
             with gr.Row():
-                audio_input = gr.Audio(
-                    source="microphone", type="filepath", label="Record from microphone"
-                )
-                audio_button = gr.Button("Transcribe")
-            audio_output = gr.Textbox()
-            chat_button = gr.Button("Questions to ChatGPT")
-            chat_output = gr.Textbox()
+                with gr.Column(scale=1):
+                    api_key = gr.Textbox(label="Paste your own openai-api-key")
+                    with gr.Row():
+                        audio_input = gr.Audio(
+                            source="microphone",
+                            type="filepath",
+                            label="Record from microphone",
+                        )
+                        audio_button = gr.Button("Transcribe")
+                    audio_output = gr.Textbox()
+                with gr.Column(scale=1):
+                    chat_button = gr.Button("Questions to ChatGPT")
+                    chat_audio_output = gr.Audio()
+                    chat_text_output = gr.Textbox()
         with gr.TabItem(label="Setting"):
             gr.Markdown("Prompt Setting")
             with gr.Row():
@@ -94,7 +56,7 @@ with gr.Blocks() as demo:
             content5,
             api_key,
         ],
-        outputs=[chat_output],
+        outputs=[chat_text_output, chat_audio_output],
     )
 
 demo.launch()
