@@ -2,7 +2,6 @@ import openai
 import whisper
 from gtts import gTTS
 
-
 model = whisper.load_model("small")
 
 
