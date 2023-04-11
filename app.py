@@ -15,7 +15,6 @@ with gr.Blocks() as demo:
                     with gr.Row():
                         audio_input = gr.Audio(
                             source="microphone",
-                            type="filepath",
                             label="Record from microphone",
                         )
                         audio_button = gr.Button("Transcribe")
@@ -25,6 +24,7 @@ with gr.Blocks() as demo:
                     chatbot = gr.Chatbot([], elemid="chatbot").style(height=750)
         with gr.TabItem(label="Setting"):
             gr.Markdown("Prompt Setting")
+            language = gr.Dropdown(["Japanese", "English"], value="English")
             with gr.Row():
                 role1 = gr.Dropdown(["system", "user", "assistant"], value="system")
                 content1 = gr.Textbox(value="You're helpful assistant.")
@@ -55,6 +55,7 @@ with gr.Blocks() as demo:
             role5,
             content5,
             api_key,
+            language,
         ],
         outputs=None,
     )
@@ -67,7 +68,6 @@ with gr.Blocks() as demo:
     chat_button.click(
         chat.answer_by_chat,
         inputs=[chatbot, audio_output],
-        # outputs=[chat_text_output, chat_audio_output],
         outputs=[chatbot],
     )
 
