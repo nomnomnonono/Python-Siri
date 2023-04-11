@@ -1,12 +1,14 @@
 import openai
-import whisper
+import soundfile
+
+# import whisper
 from gtts import gTTS
+
+dic = {"Japanese": "ja", "English": "en"}
 
 
 class CahtBOT:
     def __init__(self):
-        self.model = whisper.load_model("small")
-        self.language = "ja"
         self.messages = None
 
     def setup(
@@ -22,8 +24,10 @@ class CahtBOT:
         role5,
         content5,
         api_key,
+        language,
     ):
         openai.api_key = api_key
+        self.language = dic[language]
         self.messages = [
             {"role": role, "content": content}
             for role, content in [
@@ -36,15 +40,12 @@ class CahtBOT:
             if role != "" and content != ""
         ]
 
-    def transcribe(self, filepath):
-        audio = whisper.load_audio(filepath)
-        audio = whisper.pad_or_trim(audio)
-        mel = whisper.log_mel_spectrogram(audio).to(self.model.device)
-        _, probs = self.model.detect_language(mel)
-        self.language = max(probs, key=probs.get)
-        options = whisper.DecodingOptions(fp16=False)
-        result = whisper.decode(self.model, mel, options)
-        return result.text
+    def transcribe(self, audio):
+        sample_rate, data = audio
+        soundfile.write(file="tmp.wav", data=data, samplerate=sample_rate)
+        audio_file = open("tmp.wav", "rb")
+        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        return transcript.text
 
     def answer_by_chat(self, history, question):
         self.messages.append({"role": "user", "content": question})
@@ -62,5 +63,5 @@ class CahtBOT:
 
     def speech_synthesis(self, sentence):
         tts = gTTS(sentence, lang=self.language)
-        tts.save("tmp.mp3")
-        return "tmp.mp3"
+        tts.save("tmp.wav")
+        return "tmp.wav"
