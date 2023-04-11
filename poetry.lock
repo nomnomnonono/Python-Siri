@@ -2087,17 +2087,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "whisper"
-version = "1.1.10"
-description = "Fixed size round-robin style database"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-six = "*"
-
-[[package]]
 name = "yarl"
 version = "1.8.2"
 description = "Yet another URL library"
@@ -2124,7 +2113,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "7604edcca09143c10cac4eedfac8b50c656e15d569fdf891f82a67f8dae9ad8d"
+content-hash = "97f15e116db6465c91793e0d7dcd14bf7b0e98de589023a5338e1ac634ca176e"
 
 [metadata.files]
 aiofiles = []
@@ -2284,6 +2273,5 @@ webcolors = []
 webencodings = []
 websocket-client = []
 websockets = []
-whisper = []
 yarl = []
 zipp = []
