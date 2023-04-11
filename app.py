@@ -1,5 +1,8 @@
 import gradio as gr
-from utils import answer_by_chat, transcribe
+from chat import CahtBOT
+
+chat = CahtBOT()
+
 
 with gr.Blocks() as demo:
     gr.Markdown("Siri-like application via Whisper and ChatGPT")
@@ -8,6 +11,7 @@ with gr.Blocks() as demo:
             with gr.Row():
                 with gr.Column(scale=1):
                     api_key = gr.Textbox(label="Paste your own openai-api-key")
+                    api_button = gr.Button("SetUp")
                     with gr.Row():
                         audio_input = gr.Audio(
                             source="microphone",
@@ -16,15 +20,14 @@ with gr.Blocks() as demo:
                         )
                         audio_button = gr.Button("Transcribe")
                     audio_output = gr.Textbox()
-                with gr.Column(scale=1):
                     chat_button = gr.Button("Questions to ChatGPT")
-                    chat_audio_output = gr.Audio()
-                    chat_text_output = gr.Textbox()
+                with gr.Column(scale=1):
+                    chatbot = gr.Chatbot([], elemid="chatbot").style(height=750)
         with gr.TabItem(label="Setting"):
             gr.Markdown("Prompt Setting")
             with gr.Row():
                 role1 = gr.Dropdown(["system", "user", "assistant"], value="system")
-                content1 = gr.Textbox(value="あなたは役に立つアシスタントです。")
+                content1 = gr.Textbox(value="You're helpful assistant.")
             with gr.Row():
                 role2 = gr.Dropdown(["system", "user", "assistant"])
                 content2 = gr.Textbox()
@@ -37,13 +40,10 @@ with gr.Blocks() as demo:
             with gr.Row():
                 role5 = gr.Dropdown(["system", "user", "assistant"])
                 content5 = gr.Textbox()
-    audio_button.click(
-        transcribe, inputs=[audio_input], outputs=[audio_output], api_name="transcribe"
-    )
-    chat_button.click(
-        answer_by_chat,
+
+    api_button.click(
+        chat.setup,
         inputs=[
-            audio_output,
             role1,
             content1,
             role2,
@@ -56,7 +56,19 @@ with gr.Blocks() as demo:
             content5,
             api_key,
         ],
-        outputs=[chat_text_output, chat_audio_output],
+        outputs=None,
+    )
+    audio_button.click(
+        chat.transcribe,
+        inputs=[audio_input],
+        outputs=[audio_output],
+        api_name="transcribe",
+    )
+    chat_button.click(
+        chat.answer_by_chat,
+        inputs=[chatbot, audio_output],
+        # outputs=[chat_text_output, chat_audio_output],
+        outputs=[chatbot],
     )
 
 demo.launch()
